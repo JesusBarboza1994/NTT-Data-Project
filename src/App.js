@@ -2,7 +2,9 @@ import styled from "@emotion/styled";
 import { useEffect, useMemo, useState } from "react";
 import { getUsers } from "./services/users-sessions";
 import { useSortBy, useTable } from "react-table";
-
+import csvDownload from "json-to-csv-export";
+import {FiDownload} from "react-icons/fi"
+import {AiOutlineFilter} from "react-icons/ai"
 const Row = styled.div`
   display:flex;
   gap: 20px;
@@ -28,6 +30,11 @@ const TableBody = styled.tbody`
 const TableData = styled.td`
 `
 const Button = styled.button`
+  background:#3b7db3;
+  border: 1px solid black;
+  padding: 8px 10px;
+  border-radius:12px;
+  color: white;
 `
 
 function App() {
@@ -81,17 +88,32 @@ function App() {
 
   const isEven = (index) => index%2==0
 
+  const dataToConvert = {
+    data: correctedUsers,
+    filename: 'users_report',
+    delimiter: ',',
+    headers: ['Name', 'LastName', 'Age', 'Gender', 'Email', 'Nationality', 'Image']
+  }
+  function handleDownload(e){
+    e.preventDefault();
+    console.log("userscorrected",correctedUsers)
+    csvDownload(dataToConvert)
+  }
+
   return(
     <>
       <h1 style={{textAlign: "center"}}>Tabla de Usuarios</h1>
+      <Button onClick={handleDownload}>Download CSV File <FiDownload/></Button>
+      
       <Table {...getTableProps()}>
-        <TableHead>
+        <TableHead >
           {headerGroups.map((headerGroup) =>(
-            <TableRow {...headerGroup.getHeaderGroupProps()}>
+            <TableRow {...headerGroup.getHeaderGroupProps()} >
               {headerGroup.headers.map(column =>(
                 <TableHeader {...column.getHeaderProps(column.getSortByToggleProps())} >
                   {column.render("Header")}
-                  {column.isSorted ? (column.isSortedDesc ? "▲" : "▼") : ""}
+                  {column.isSorted ? (column.isSortedDesc ? "▲" : "▼") : <AiOutlineFilter style={{paddingTop:"15px"}}/>}
+                  
                 </TableHeader>
               ))}
             </TableRow>
