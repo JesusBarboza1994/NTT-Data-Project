@@ -9,6 +9,13 @@ const Row = styled.div`
   border: 1px solid black;
 `
 const Table = styled.table`
+  border: 1px solid white;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 140%;
+  width:100%;
+  text-align: center;
 `
 const TableHead = styled.thead`
 `
@@ -59,12 +66,11 @@ function App() {
                       Object.keys(correctedUsers[0]).map(key =>{
                         if(key === "image"){
                           return{
-                              Header: key,
+                              Header: key.toUpperCase(),
                               accessor: key,
                               Cell: ({value})=> <img src={value}/>,
                               maxWidth: 100
-                          }
-                          
+                          }            
                         }
                         return {Header:key.toUpperCase(), accessor:key};
   }):[],[correctedUsers])
@@ -75,52 +81,42 @@ function App() {
 
   const isEven = (index) => index%2==0
 
-  return <Table {...getTableProps()}>
-    <TableHead>
-      {headerGroups.map((headerGroup) =>(
-        <TableRow {...headerGroup.getHeaderGroupProps()}>
-          {headerGroup.headers.map(column =>(
-            <TableHeader {...column.getHeaderProps(column.getSortByToggleProps())} >
-              {column.render("Header")}
-              {column.isSorted ? (column.isSortedDesc ? "▽" : "△") : ""}
-            </TableHeader>
+  return(
+    <>
+      <h1 style={{textAlign: "center"}}>Tabla de Usuarios</h1>
+      <Table {...getTableProps()}>
+        <TableHead>
+          {headerGroups.map((headerGroup) =>(
+            <TableRow {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map(column =>(
+                <TableHeader {...column.getHeaderProps(column.getSortByToggleProps())} >
+                  {column.render("Header")}
+                  {column.isSorted ? (column.isSortedDesc ? "▲" : "▼") : ""}
+                </TableHeader>
+              ))}
+            </TableRow>
           ))}
-        </TableRow>
-      ))}
-    </TableHead>
-    <TableBody {...getTableBodyProps()}>
-      {rows.map((row, index)=>{
-        prepareRow(row)
+        </TableHead>
+        <TableBody {...getTableBodyProps()}>
+          {rows.map((row, index)=>{
+            prepareRow(row)
 
-        return(
-          <TableRow {...row.getRowProps()} style={{background: `${isEven(index) ? "#3b7db3": "white"}`}}>
-            {row.cells.map((cell, index)=>(
-              <TableData {...cell.getCellProps()}>
-                {cell.render("Cell")}
-              </TableData>
-            ))}
-            
-          </TableRow>
-        )
+            return(
+              <TableRow {...row.getRowProps()} style={{background: `${isEven(index) ? "#3b7db3": "white"}`, opacity:0.75}}>
+                {row.cells.map((cell, index)=>(
+                  <TableData {...cell.getCellProps()}>
+                    {cell.render("Cell")}
+                  </TableData>
+                ))}
+                
+              </TableRow>
+            )
 
-      })}
-    </TableBody>
-  </Table>
+          })}
+        </TableBody>
+      </Table>
+    </> )
 
-  // return (
-  //   users ? users.map(user => {
-  //     // console.log("asd",correctedUsers)
-  //     return  <Row>
-  //               <h1>{user.name.first}</h1>
-  //               <h1>{user.name.last}</h1>
-  //               <h1>{user.dob.age}</h1>
-  //               <h1>{ user.gender == "female" ? "F" : "M" }</h1>
-  //               <h1>{user.email}</h1>
-  //               <h1>{user.nat}</h1>
-  //               <img src={user.picture.thumbnail} />
-  //             </Row>
-  //   }) : null
-  // );
 }
 
 export default App;
